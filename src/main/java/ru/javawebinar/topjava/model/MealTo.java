@@ -29,10 +29,6 @@ public class MealTo {
         return id;
     }
 
-    public String getTime() {
-        return dateTime.toLocalDate().toString() + " " + dateTime.toLocalTime().toString();
-    }
-
     public String getDescription() {
         return description;
     }

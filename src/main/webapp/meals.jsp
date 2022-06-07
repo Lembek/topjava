@@ -16,12 +16,12 @@
         <th>Калории</th>
     </tr>
     <c:forEach var="mealTo" items="${mealsTo}">
-        <tr class="${mealTo.isExcess() ? "withExcess" : "withoutExcess"}">
-            <td>${mealTo.getTime()}</td>
-            <td>${mealTo.getDescription()}</td>
-            <td>${mealTo.getCalories()}</td>
-            <td><a href="meals?action=edit&id=${mealTo.getId()}">Изменить</a></td>
-            <td><a href="meals?action=delete&id=${mealTo.getId()}">Удалить</a></td>
+        <tr class="${mealTo.excess ? "withExcess" : "withoutExcess"}">
+            <td>${mealTo.dateTime.toLocalDate()} ${mealTo.dateTime.toLocalTime()}</td>
+            <td>${mealTo.description}</td>
+            <td>${mealTo.calories}</td>
+            <td><a href="meals?action=edit&id=${mealTo.id}">Изменить</a></td>
+            <td><a href="meals?action=delete&id=${mealTo.id}">Удалить</a></td>
         </tr>
     </c:forEach>
 </table>
