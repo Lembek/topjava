@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.repository.InMemoryMealRepository;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.JspUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -30,24 +31,25 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action != null) {
-            int mealId = Integer.parseInt(request.getParameter("id"));
-            switch (action) {
-                case "delete":
-                    mealRepository.delete(mealId);
-                    log.debug("redirect to meals after delete");
-                    response.sendRedirect("meals");
-                    break;
-                case "edit":
-                    request.setAttribute("meal", mealRepository.get(mealId));
-                    log.debug("redirect to mealEdit");
-                    request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
-            }
-        } else {
-            List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealRepository.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
-            request.setAttribute("mealsTo", mealsTo);
-            request.getRequestDispatcher("meals.jsp").forward(request, response);
+        String action = (request.getParameter("action") == null ? "" : request.getParameter("action"));
+        Integer mealId = JspUtil.getIdFromJsp(request, "mealId");
+        switch (action) {
+            case "delete":
+                mealRepository.delete(mealId);
+                log.debug("redirect to meals after delete");
+                response.sendRedirect("meals");
+                break;
+            case "edit":
+                request.setAttribute("meal", mealRepository.get(mealId));
+                log.debug("redirect to mealEdit");
+                request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
+                break;
+            default:
+                List<MealTo> mealsTo = MealsUtil.filteredByStreams(mealRepository.getAll(),
+                        LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
+                request.setAttribute("mealsTo", mealsTo);
+                log.debug("meal table request");
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
     }
 
@@ -58,8 +60,10 @@ public class MealServlet extends HttpServlet {
         int calories = Integer.parseInt(request.getParameter("calories"));
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         Meal meal = new Meal(dateTime, description, calories);
-        if (request.getParameter("mealId") != null)
-            meal.setId(Integer.parseInt(request.getParameter("mealId")));
+        Integer mealId = JspUtil.getIdFromJsp(request, "mealId");
+        if (mealId != null) {
+            meal.setId(mealId);
+        }
         mealRepository.save(meal);
         log.debug("redirect to meals after save");
         response.sendRedirect("meals");

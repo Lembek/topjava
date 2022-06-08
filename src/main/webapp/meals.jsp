@@ -20,8 +20,8 @@
             <td>${mealTo.dateTime.toLocalDate()} ${mealTo.dateTime.toLocalTime()}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>
-            <td><a href="meals?action=edit&id=${mealTo.id}">Изменить</a></td>
-            <td><a href="meals?action=delete&id=${mealTo.id}">Удалить</a></td>
+            <td><a href="meals?action=edit&mealId=${mealTo.id}">Изменить</a></td>
+            <td><a href="meals?action=delete&mealId=${mealTo.id}">Удалить</a></td>
         </tr>
     </c:forEach>
 </table>
@@ -31,7 +31,7 @@
         <input type="text" name="description">
     </label><br>
     <label>Calories
-        <input type="text" name="calories">
+        <input type="number" name="calories">
     </label><br>
     <label>Date/Time
         <input type="datetime-local" name="dateTime">
