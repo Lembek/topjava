@@ -31,15 +31,19 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = (request.getParameter("action") == null ? "" : request.getParameter("action"));
-        Integer mealId = JspUtil.getIdFromJsp(request, "mealId");
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "";
+        }
         switch (action) {
             case "delete":
+                Integer mealId = JspUtil.getIdFromRequest(request, "mealId");
                 mealRepository.delete(mealId);
                 log.debug("redirect to meals after delete");
                 response.sendRedirect("meals");
                 break;
             case "edit":
+                mealId = JspUtil.getIdFromRequest(request, "mealId");
                 request.setAttribute("meal", mealRepository.get(mealId));
                 log.debug("redirect to mealEdit");
                 request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
@@ -59,11 +63,9 @@ public class MealServlet extends HttpServlet {
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
-        Meal meal = new Meal(dateTime, description, calories);
-        Integer mealId = JspUtil.getIdFromJsp(request, "mealId");
-        if (mealId != null) {
-            meal.setId(mealId);
-        }
+        Integer mealId = JspUtil.getIdFromRequest(request, "mealId");
+        Meal meal = (mealId == null) ? new Meal(dateTime, description, calories) :
+                new Meal(mealId, dateTime, description, calories);
         mealRepository.save(meal);
         log.debug("redirect to meals after save");
         response.sendRedirect("meals");
