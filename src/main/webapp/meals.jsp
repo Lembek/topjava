@@ -34,7 +34,7 @@
         </tr>
         </thead>
         <c:forEach items="${requestScope.meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
@@ -49,6 +49,23 @@
             </tr>
         </c:forEach>
     </table>
+    <br>
+    <form action="meals" method="get">
+        <label>От даты (включая)
+            <input type="date" name="startDate">
+        </label>
+        <label>От времени (включая)
+            <input type="time" name="startTime" autocomplete="off">
+        </label><br>
+        <label>До даты (включая)
+            <input type="date" name="endDate" autocomplete="off">
+        </label>
+        <label>До времени (исключая)
+            <input type="time" name="endTime" autocomplete="off">
+        </label><br>
+        <input type="hidden" name="filter" value="filter">
+        <button type="submit">Отфильтровать</button>
+    </form>
 </section>
 </body>
 </html>
