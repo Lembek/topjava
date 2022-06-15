@@ -28,13 +28,13 @@ public class MealRestController {
     }
 
     public List<MealTo> getAll() {
-        log.info("get all in controller");
+        log.info("get all");
         return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
     public List<MealTo> getAllWithDateFilter(LocalDate startDate, LocalDate endDate,
                                              LocalTime startTime, LocalTime endTime) {
-        log.info("get all with date filter in controller");
+        log.info("get all with date filter");
         if (startDate == null) {
             startDate = LocalDate.MIN;
         }
@@ -53,23 +53,23 @@ public class MealRestController {
     }
 
     public Meal get(int mealId) {
-        log.info("get {} in controller", mealId);
+        log.info("get {}", mealId);
         return service.get(authUserId(), mealId);
     }
 
     public void delete(int mealId) {
-        log.info("delete {} in controller", mealId);
+        log.info("delete {}", mealId);
         service.delete(authUserId(), mealId);
     }
 
     public Meal create(Meal meal) {
-        log.info("create {} in controller", meal);
+        log.info("create {}", meal);
         checkNew(meal);
         return service.create(authUserId(), meal);
     }
 
     public Meal update(Meal meal, int mealId) {
-        log.info("update {} with id={} in controller", meal, mealId);
+        log.info("update {} with id={}", meal, mealId);
         assureIdConsistent(meal, mealId);
         return service.update(authUserId(), meal);
     }

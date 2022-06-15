@@ -36,8 +36,7 @@ public class InMemoryMealRepository implements MealRepository {
             getUserMeals(userId).put(meal.getId(), meal);
             return meal;
         }
-        return checkOwnership(userId, meal.getId()) ?
-                getUserMeals(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
+        return getUserMeals(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getAllWithDateFilter(int userId, LocalDate startDate, LocalDate endDate) {
         log.info("getAll with date filter");
         return getAllWithFilters(userId,
-                meal -> DateTimeUtil.isBetweenHalfClose(meal.getDate(), startDate, endDate));
+                meal -> DateTimeUtil.isBetweenClose(meal.getDate(), startDate, endDate));
     }
 
     private List<Meal> getAllWithFilters(int userId, Predicate<Meal> filter) {
@@ -72,17 +71,8 @@ public class InMemoryMealRepository implements MealRepository {
                 .collect(Collectors.toList());
     }
 
-    private boolean checkOwnership(int userId, int mealId) {
-        return getUserMeals(userId).containsKey(mealId);
-    }
-
     private Map<Integer, Meal> getUserMeals(int userId) {
-        Map<Integer, Meal> meals = repository.get(userId);
-        if (meals == null) {
-            repository.put(userId, new ConcurrentHashMap<>());
-            return repository.get(userId);
-        }
-        return meals;
+        return repository.computeIfAbsent(userId, (id) -> new ConcurrentHashMap<>());
     }
 }
 
