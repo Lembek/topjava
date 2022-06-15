@@ -52,16 +52,16 @@
     <br>
     <form action="meals" method="get">
         <label>От даты (включая)
-            <input type="date" name="startDate">
+            <input type="date" value="${startDate}" name="startDate">
         </label>
         <label>От времени (включая)
-            <input type="time" name="startTime" autocomplete="off">
+            <input type="time" name="startTime" value="${startTime}" autocomplete="off">
         </label><br>
         <label>До даты (включая)
-            <input type="date" name="endDate" autocomplete="off">
+            <input type="date" name="endDate" value="${endDate}" autocomplete="off">
         </label>
         <label>До времени (исключая)
-            <input type="time" name="endTime" autocomplete="off">
+            <input type="time" name="endTime" value="${endTime}" autocomplete="off">
         </label><br>
         <input type="hidden" name="filter" value="filter">
         <button type="submit">Отфильтровать</button>

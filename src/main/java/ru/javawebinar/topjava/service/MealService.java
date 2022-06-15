@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -22,24 +22,20 @@ public class MealService {
         checkNotFoundWithId(repository.delete(userId, mealId), mealId);
     }
 
-    public Meal save(int userId, Meal meal) {
-        return checkNotFoundWithId(repository.save(userId, meal), meal.getId());
-    }
-
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return repository.getAll(userId);
     }
 
-    public Collection<Meal> getAllWithDateFilter(int userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return repository.getAllWithDateTimeFilter(userId, startDateTime, endDateTime);
+    public List<Meal> getAllWithDateFilter(int userId, LocalDate startDate, LocalDate endDate) {
+        return repository.getAllWithDateFilter(userId, startDate, endDate);
     }
 
     public Meal get(int userId, int mealId) {
         return checkNotFoundWithId(repository.get(userId, mealId), mealId);
     }
 
-    public Meal update(int userId, Meal meal, int mealId) {
-        return checkNotFoundWithId(repository.save(userId, meal), mealId);
+    public Meal update(int userId, Meal meal) {
+        return checkNotFoundWithId(repository.save(userId, meal), meal.getId());
     }
 
     public Meal create(int userId, Meal meal) {
