@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -38,59 +39,86 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        assertThat(service.get(USER_FIRST_BREAKFAST_ID, USER_ID)).usingRecursiveComparison().isEqualTo(USER_FIRST_BREAKFAST);
+        assertEqual(service.get(USER_FIRST_BREAKFAST_ID, USER_ID), UserFirstBreakfast);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getWrongOwner() {
-        service.get(USER_FIRST_BREAKFAST_ID, ADMIN_ID);
+        assertThrows(NotFoundException.class, () -> service.get(USER_FIRST_BREAKFAST_ID, ADMIN_ID));
     }
 
-    @Test(expected = NotFoundException.class)
-    public void deleteNotFound() {
+    @Test
+    public void delete() {
         service.delete(USER_FIRST_BREAKFAST_ID, USER_ID);
-        service.get(USER_FIRST_BREAKFAST_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(USER_FIRST_BREAKFAST_ID, USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteWrongOwner() {
-        service.delete(USER_FIRST_BREAKFAST_ID, ADMIN_ID);
+        assertThrows(NotFoundException.class, () -> service.delete(USER_FIRST_BREAKFAST_ID, ADMIN_ID));
+    }
+
+    @Test
+    public void getBetweenInclusiveOneNull() {
+        assertEqual(service.getBetweenInclusive(null, LocalDate.of(2020, 1, 30), USER_ID),
+                Arrays.asList(UserFirstDinner, UserFirstLunch, UserFirstBreakfast));
+    }
+
+    @Test
+    public void getBetweenInclusiveTwoNull() {
+        assertEqual(service.getBetweenInclusive(null, null, ADMIN_ID),
+                Arrays.asList(AdminDinner, AdminLunch, AdminBreakfast));
     }
 
     @Test
     public void getBetweenInclusive() {
-        assertThat(service.getBetweenInclusive(null, LocalDate.parse("2020-01-30"), USER_ID))
-                .usingRecursiveFieldByFieldElementComparator()
-                .isEqualTo(Arrays.asList(USER_FIRST_DINNER, USER_FIRST_LUNCH, USER_FIRST_BREAKFAST));
+        assertEqual(service.getBetweenInclusive(LocalDate.of(2020, 1, 31), LocalDate.of(2020, 2, 5), USER_ID),
+                Arrays.asList(UserSecondDinner, UserSecondLunch, UserSecondBreakfast, UserMidnightMeal));
     }
 
     @Test
     public void getAll() {
         List<Meal> list = service.getAll(USER_ID);
-        assertThat(list).usingRecursiveFieldByFieldElementComparator()
-                .isEqualTo(Arrays.asList(USER_SECOND_DINNER, USER_SECOND_LUNCH, USER_SECOND_BREAKFAST, USER_MIDNIGHT_MEAL,
-                        USER_FIRST_DINNER, USER_FIRST_LUNCH, USER_FIRST_BREAKFAST));
+        assertEqual(list, Arrays.asList(UserThirdBreakfast, UserSecondDinner, UserSecondLunch,
+                UserSecondBreakfast, UserMidnightMeal, UserFirstDinner, UserFirstLunch, UserFirstBreakfast));
     }
 
     @Test
     public void update() {
         service.update(getUpdated(), USER_ID);
-        assertThat(service.get(USER_FIRST_BREAKFAST_ID, USER_ID)).usingRecursiveComparison().isEqualTo(getUpdated());
+        assertEqual(service.get(USER_FIRST_BREAKFAST_ID, USER_ID), getUpdated());
 
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void updateWrongOwner() {
-        service.update(getUpdated(), ADMIN_ID);
+        assertThrows(NotFoundException.class, () -> service.update(getUpdated(), ADMIN_ID));
     }
 
     @Test
     public void create() {
-        assertThat(getNew()).usingRecursiveComparison().ignoringFields("id").isEqualTo(service.create(getNew(), USER_ID));
+        int id = service.create(getNew(), USER_ID).getId();
+        assertThat(getNew()).usingRecursiveComparison().ignoringFields("id").isEqualTo(service.get(id, USER_ID));
     }
 
-    @Test(expected = DataAccessException.class)
+    @Test
     public void duplicateDateCreate() {
-        service.create(new Meal(USER_FIRST_BREAKFAST.getDateTime(), "Пробный завтрак", 10), USER_ID);
+        assertThrows(DataAccessException.class, () ->
+                service.create(new Meal(UserFirstBreakfast.getDateTime(), "Пробный завтрак", 10), USER_ID));
+    }
+
+    @Test
+    public void deleteNotExist() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_EXIST_ID, USER_ID));
+    }
+
+    @Test
+    public void updateNotExist() {
+        assertThrows(NotFoundException.class, () -> service.update(NotExist, USER_ID));
+    }
+
+    @Test
+    public void getNotExist() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_EXIST_ID, USER_ID));
     }
 }
