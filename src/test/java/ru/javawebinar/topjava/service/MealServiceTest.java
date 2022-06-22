@@ -24,6 +24,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
+        "classpath:spring/spring-app-repository.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -39,7 +40,7 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        assertEqual(service.get(USER_FIRST_BREAKFAST_ID, USER_ID), UserFirstBreakfast);
+        assertEqual(service.get(USER_FIRST_BREAKFAST_ID, USER_ID), userFirstBreakfast);
     }
 
     @Test
@@ -61,33 +62,32 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusiveOneNull() {
         assertEqual(service.getBetweenInclusive(null, LocalDate.of(2020, 1, 30), USER_ID),
-                Arrays.asList(UserFirstDinner, UserFirstLunch, UserFirstBreakfast));
+                Arrays.asList(userFirstDinner, userFirstLunch, userFirstBreakfast));
     }
 
     @Test
     public void getBetweenInclusiveTwoNull() {
         assertEqual(service.getBetweenInclusive(null, null, ADMIN_ID),
-                Arrays.asList(AdminDinner, AdminLunch, AdminBreakfast));
+                Arrays.asList(adminDinner, adminLunch, adminBreakfast));
     }
 
     @Test
     public void getBetweenInclusive() {
         assertEqual(service.getBetweenInclusive(LocalDate.of(2020, 1, 31), LocalDate.of(2020, 2, 5), USER_ID),
-                Arrays.asList(UserSecondDinner, UserSecondLunch, UserSecondBreakfast, UserMidnightMeal));
+                Arrays.asList(userSecondDinner, userSecondLunch, userSecondBreakfast, userMidnightMeal));
     }
 
     @Test
     public void getAll() {
         List<Meal> list = service.getAll(USER_ID);
-        assertEqual(list, Arrays.asList(UserThirdBreakfast, UserSecondDinner, UserSecondLunch,
-                UserSecondBreakfast, UserMidnightMeal, UserFirstDinner, UserFirstLunch, UserFirstBreakfast));
+        assertEqual(list, Arrays.asList(userThirdBreakfast, userSecondDinner, userSecondLunch,
+                userSecondBreakfast, userMidnightMeal, userFirstDinner, userFirstLunch, userFirstBreakfast));
     }
 
     @Test
     public void update() {
         service.update(getUpdated(), USER_ID);
         assertEqual(service.get(USER_FIRST_BREAKFAST_ID, USER_ID), getUpdated());
-
     }
 
     @Test
@@ -97,14 +97,15 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        int id = service.create(getNew(), USER_ID).getId();
-        assertThat(getNew()).usingRecursiveComparison().ignoringFields("id").isEqualTo(service.get(id, USER_ID));
+        Meal meal = service.create(getNew(), USER_ID);
+        assertThat(service.get(meal.getId(), USER_ID)).usingRecursiveComparison().ignoringFields("id").isEqualTo(getNew());
+        assertThat(meal).usingRecursiveComparison().ignoringFields("id").isEqualTo(getNew());
     }
 
     @Test
     public void duplicateDateCreate() {
         assertThrows(DataAccessException.class, () ->
-                service.create(new Meal(UserFirstBreakfast.getDateTime(), "Пробный завтрак", 10), USER_ID));
+                service.create(new Meal(userFirstBreakfast.getDateTime(), "Пробный завтрак", 10), USER_ID));
     }
 
     @Test
@@ -114,7 +115,7 @@ public class MealServiceTest {
 
     @Test
     public void updateNotExist() {
-        assertThrows(NotFoundException.class, () -> service.update(NotExist, USER_ID));
+        assertThrows(NotFoundException.class, () -> service.update(notExist, USER_ID));
     }
 
     @Test

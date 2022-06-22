@@ -20,29 +20,29 @@ public class MealTestData {
     public static final int ADMIN_LUNCH_ID = START_SEQ + 12;
     public static final int ADMIN_DINNER_ID = START_SEQ + 13;
 
-    public static final Meal UserFirstBreakfast = new Meal(USER_FIRST_BREAKFAST_ID, LocalDateTime.of(2020, 1, 30, 10, 0), "Завтрак", 500);
-    public static final Meal UserFirstLunch = new Meal(USER_FIRST_LUNCH_ID, LocalDateTime.of(2020, 1, 30, 13, 0), "Обед", 1000);
-    public static final Meal UserFirstDinner = new Meal(USER_FIRST_DINNER_ID, LocalDateTime.of(2020, 1, 30, 20, 0), "Ужин", 500);
-    public static final Meal UserMidnightMeal = new Meal(USER_MIDNIGHT_MEAL_ID, LocalDateTime.of(2020, 1, 31, 0, 0), "Еда на граничное время", 100);
-    public static final Meal UserSecondBreakfast = new Meal(USER_SECOND_BREAKFAST_ID, LocalDateTime.of(2020, 1, 31, 10, 0), "Завтрак", 1000);
-    public static final Meal UserSecondLunch = new Meal(USER_SECOND_LUNCH_ID, LocalDateTime.of(2020, 1, 31, 13, 0), "Обед", 500);
-    public static final Meal UserSecondDinner = new Meal(USER_SECOND_DINNER_ID, LocalDateTime.of(2020, 1, 31, 20, 0), "Ужин", 410);
-    public static final Meal UserThirdBreakfast = new Meal(USER_THIRD_BREAKFAST_ID, LocalDateTime.of(2020, 2, 20, 9, 0), "Завтрак", 415);
-    public static final Meal AdminBreakfast = new Meal(ADMIN_BREAKFAST_ID, LocalDateTime.of(2021, 1, 31, 10, 0), "Завтрак админа", 500);
-    public static final Meal AdminLunch = new Meal(ADMIN_LUNCH_ID, LocalDateTime.of(2021, 1, 31, 13, 0), "Обед админа", 700);
-    public static final Meal AdminDinner = new Meal(ADMIN_DINNER_ID, LocalDateTime.of(2021, 1, 31, 20, 0), "Ужин админа", 600);
+    public static final Meal userFirstBreakfast = new Meal(USER_FIRST_BREAKFAST_ID, LocalDateTime.of(2020, 1, 30, 10, 0), "Завтрак", 500);
+    public static final Meal userFirstLunch = new Meal(USER_FIRST_LUNCH_ID, LocalDateTime.of(2020, 1, 30, 13, 0), "Обед", 1000);
+    public static final Meal userFirstDinner = new Meal(USER_FIRST_DINNER_ID, LocalDateTime.of(2020, 1, 30, 20, 0), "Ужин", 500);
+    public static final Meal userMidnightMeal = new Meal(USER_MIDNIGHT_MEAL_ID, LocalDateTime.of(2020, 1, 31, 0, 0), "Еда на граничное время", 100);
+    public static final Meal userSecondBreakfast = new Meal(USER_SECOND_BREAKFAST_ID, LocalDateTime.of(2020, 1, 31, 10, 0), "Завтрак", 1000);
+    public static final Meal userSecondLunch = new Meal(USER_SECOND_LUNCH_ID, LocalDateTime.of(2020, 1, 31, 13, 0), "Обед", 500);
+    public static final Meal userSecondDinner = new Meal(USER_SECOND_DINNER_ID, LocalDateTime.of(2020, 1, 31, 20, 0), "Ужин", 410);
+    public static final Meal userThirdBreakfast = new Meal(USER_THIRD_BREAKFAST_ID, LocalDateTime.of(2020, 2, 20, 9, 0), "Завтрак", 415);
+    public static final Meal adminBreakfast = new Meal(ADMIN_BREAKFAST_ID, LocalDateTime.of(2021, 1, 31, 10, 0), "Завтрак админа", 500);
+    public static final Meal adminLunch = new Meal(ADMIN_LUNCH_ID, LocalDateTime.of(2021, 1, 31, 13, 0), "Обед админа", 700);
+    public static final Meal adminDinner = new Meal(ADMIN_DINNER_ID, LocalDateTime.of(2021, 1, 31, 20, 0), "Ужин админа", 600);
 
     public static final int NOT_EXIST_ID = 10;
-    public static final Meal NotExist = new Meal(NOT_EXIST_ID, LocalDateTime.of(2021, 1, 31, 20, 0), "Еда мечты", 1);
+    public static final Meal notExist = new Meal(NOT_EXIST_ID, LocalDateTime.of(2021, 1, 31, 20, 0), "Еда мечты", 1);
 
     public static Meal getNew() {
-        return new Meal(LocalDateTime.parse("2022-01-30T11:00"), "Второй завтрак", 500);
+        return new Meal(LocalDateTime.of(2022,1,30,11,0), "Второй завтрак", 500);
     }
 
     public static Meal getUpdated() {
-        Meal meal = new Meal(UserFirstBreakfast);
+        Meal meal = new Meal(userFirstBreakfast);
         meal.setCalories(123);
-        meal.setDateTime(LocalDateTime.parse("2020-03-30T10:00"));
+        meal.setDateTime(LocalDateTime.of(2020,3,30,10,0));
         meal.setDescription("Новый завтрак");
         return meal;
     }
