@@ -46,11 +46,7 @@ public class JpaMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal meal = em.find(Meal.class, id);
-        return checkOwner(meal, userId) ? meal : null;
-    }
-
-    private boolean checkOwner(Meal meal, int userId) {
-        return meal != null && meal.getUser().getId() == userId;
+        return (meal != null && meal.getUser().getId() == userId) ? meal : null;
     }
 
     @Override
