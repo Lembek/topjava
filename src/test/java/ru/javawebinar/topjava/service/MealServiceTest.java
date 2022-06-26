@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.LoggerUtil;
+import ru.javawebinar.topjava.TestStopwatch;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -31,10 +31,15 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     @Rule
-    public LoggerUtil rule = new LoggerUtil();
+    public TestStopwatch timeCounter = new TestStopwatch();
 
     @Autowired
     private MealService service;
+
+    @AfterClass
+    public static void afterClass() {
+        TestStopwatch.printInfo();
+    }
 
     @Test
     public void delete() {
@@ -113,10 +118,5 @@ public class MealServiceTest {
     @Test
     public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        LoggerUtil.printInfo();
     }
 }
