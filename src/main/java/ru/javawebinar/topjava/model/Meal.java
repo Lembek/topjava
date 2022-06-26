@@ -17,16 +17,13 @@ import java.time.LocalTime;
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id =:id AND m.user.id =:userId"),
         @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m WHERE m.user.id =:id ORDER BY m.dateTime DESC"),
         @NamedQuery(name = Meal.GET_BETWEEN_DATES, query = "SELECT m FROM Meal m" +
-                " WHERE m.user.id =:id AND m.dateTime >=:start AND m.dateTime <: end ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime =:dateTime," +
-                " m.calories =:calories, m.description =:description WHERE m.id =: id AND m.user.id =:userId")
+                " WHERE m.user.id =:id AND m.dateTime >=:start AND m.dateTime <: end ORDER BY m.dateTime DESC")
 })
 public class Meal extends AbstractBaseEntity {
 
     public static final String DELETE = "Meal.delete";
     public static final String GET_ALL = "Meal.getAll";
     public static final String GET_BETWEEN_DATES = "Meal.getBetweenHalfOpen";
-    public static final String UPDATE = "Meal.update";
 
     @NotNull
     @Column(name = "date_time", nullable = false)
@@ -41,6 +38,7 @@ public class Meal extends AbstractBaseEntity {
     @Column(name = "calories", nullable = false)
     private int calories;
 
+    @NotNull
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User user;

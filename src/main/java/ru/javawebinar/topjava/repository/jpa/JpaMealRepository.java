@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.repository.jpa;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = true)
 public class JpaMealRepository implements MealRepository {
 
     @PersistenceContext
@@ -22,14 +21,17 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
+        User user = em.getReference(User.class, userId);
         if (meal.isNew()) {
-            User user = em.getReference(User.class, userId);
             meal.setUser(user);
             em.persist(meal);
             return meal;
         }
-        Meal oldMeal = em.find(Meal.class, meal.getId());
-        return checkOwner(oldMeal, userId) ? em.merge(meal) : null;
+        if (get(meal.getId(), userId) != null) {
+            meal.setUser(user);
+            return em.merge(meal);
+        }
+        return null;
     }
 
     @Override
@@ -47,6 +49,10 @@ public class JpaMealRepository implements MealRepository {
         return checkOwner(meal, userId) ? meal : null;
     }
 
+    private boolean checkOwner(Meal meal, int userId) {
+        return meal != null && meal.getUser().getId() == userId;
+    }
+
     @Override
     public List<Meal> getAll(int userId) {
         return em.createNamedQuery(Meal.GET_ALL, Meal.class)
@@ -61,9 +67,5 @@ public class JpaMealRepository implements MealRepository {
                 .setParameter("start", startDateTime)
                 .setParameter("end", endDateTime)
                 .getResultList();
-    }
-
-    private boolean checkOwner(Meal meal, int userId) {
-        return meal != null && meal.getUser().getId() == userId;
     }
 }
