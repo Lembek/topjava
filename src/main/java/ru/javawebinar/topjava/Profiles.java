@@ -2,6 +2,8 @@ package ru.javawebinar.topjava;
 
 import org.springframework.util.ClassUtils;
 
+import java.util.Locale;
+
 public class Profiles {
     public static final String
             JDBC = "jdbc",
@@ -14,7 +16,7 @@ public class Profiles {
             POSTGRES_DB = "postgres",
             HSQL_DB = "hsqldb";
 
-    //  Get DB profile depending of DB driver in classpath
+    //  Get DB profile depending on DB driver in classpath
     public static String getActiveDbProfile() {
         if (ClassUtils.isPresent("org.postgresql.Driver", null)) {
             return POSTGRES_DB;
@@ -23,5 +25,19 @@ public class Profiles {
         } else {
             throw new IllegalStateException("Could not find DB driver");
         }
+    }
+
+    public static String getActiveRepositoryProfile(String className) {
+        var nameLowerCase = className.toLowerCase(Locale.ROOT);
+        if (nameLowerCase.contains("jdbc")) {
+            return JDBC;
+        }
+        if (nameLowerCase.contains("datajpa")) {
+            return DATAJPA;
+        }
+        if (nameLowerCase.contains("jpa")) {
+            return JPA;
+        }
+        return REPOSITORY_IMPLEMENTATION;
     }
 }
