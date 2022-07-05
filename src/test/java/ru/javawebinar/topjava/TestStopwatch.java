@@ -27,5 +27,6 @@ public class TestStopwatch extends Stopwatch {
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
+        results.delete(0,results.length());
     }
 }

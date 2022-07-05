@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.service;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -49,8 +48,7 @@ public class MealService {
         return repository.save(meal, userId);
     }
 
-    @Profile("datajpa")
     public Meal getWithUser(int id, int userId) {
-        return repository.getWithUser(id, userId);
+        return checkNotFoundWithId(repository.getWithUser(id, userId), id);
     }
 }

@@ -8,14 +8,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
 public abstract class JdbcBaseMealRepository implements MealRepository {
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -55,13 +53,11 @@ public abstract class JdbcBaseMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        String date = getDate(meal.getDateTime());
-        var dateTime = date == null ? meal.getDateTime() : date;
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", dateTime)
+                .addValue("date_time", getDate(meal.getDateTime()))
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {
@@ -80,14 +76,10 @@ public abstract class JdbcBaseMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        String start = getDate(startDateTime);
-        String end = getDate(endDateTime);
-        var startDate = start == null ? startDateTime : start;
-        var endDate = end == null ? endDateTime : end;
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, startDate, endDate);
+                ROW_MAPPER, userId, getDate(startDateTime), getDate(endDateTime));
     }
 
-    public abstract String getDate(LocalDateTime dateTime);
+    protected abstract Object getDate(LocalDateTime dateTime);
 }

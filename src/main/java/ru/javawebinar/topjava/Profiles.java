@@ -2,8 +2,6 @@ package ru.javawebinar.topjava;
 
 import org.springframework.util.ClassUtils;
 
-import java.util.Locale;
-
 public class Profiles {
     public static final String
             JDBC = "jdbc",
@@ -25,19 +23,5 @@ public class Profiles {
         } else {
             throw new IllegalStateException("Could not find DB driver");
         }
-    }
-
-    public static String getActiveRepositoryProfile(String className) {
-        var nameLowerCase = className.toLowerCase(Locale.ROOT);
-        if (nameLowerCase.contains("jdbc")) {
-            return JDBC;
-        }
-        if (nameLowerCase.contains("datajpa")) {
-            return DATAJPA;
-        }
-        if (nameLowerCase.contains("jpa")) {
-            return JPA;
-        }
-        return REPOSITORY_IMPLEMENTATION;
     }
 }
