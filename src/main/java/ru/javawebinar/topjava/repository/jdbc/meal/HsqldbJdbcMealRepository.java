@@ -18,7 +18,7 @@ public class HsqldbJdbcMealRepository extends JdbcBaseMealRepository {
     }
 
     @Override
-    public Object getDate(LocalDateTime dateTime) {
+    public String getDate(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace('T', ' ');
     }
 }
