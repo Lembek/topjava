@@ -37,4 +37,8 @@ public class MealTestData {
     public static Meal getUpdated() {
         return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
     }
+
+    public static Meal getWithoutCalories() {
+        return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Coca Cola Zero", 0);
+    }
 }
